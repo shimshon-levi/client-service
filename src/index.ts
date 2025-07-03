@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import mongoose from "mongoose";
 import { config } from "./config/config";
 import { Server } from "./express/server";
@@ -29,3 +30,6 @@ const main = async () => {
 };
 
 main().catch(logger.error);
+=======
+// init
+>>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

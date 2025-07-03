@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { z } from "zod";
 
 export const createCaseSchema = z.object({
@@ -12,3 +13,6 @@ export const updateCaseSchema = z.object({
     .optional(),
   notes: z.string().optional(),
 });
+=======
+// init
+>>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

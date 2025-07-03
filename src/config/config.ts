@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import env from "env-var";
 import "./dotenv";
 export const config = {
@@ -50,3 +51,6 @@ export const config = {
     name: env.get("AUTH_COOKIE_NAME").default("auth_token").asString(),
   },
 };
+=======
+// init
+>>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

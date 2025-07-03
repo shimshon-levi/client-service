@@ -7,5 +7,5 @@ dist/
 # coverage
 coverage/
 
-# env files
+# env file
 .env

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Request, Response } from "express";
 import { CaseManager } from "./manager";
 
@@ -23,3 +24,6 @@ export const CaseController = {
     res.json(updated);
   },
 };
+=======
+// init
+>>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

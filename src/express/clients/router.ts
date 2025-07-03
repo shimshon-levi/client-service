@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Router } from "express";
 import { ClientController } from "./controller";
 import { wrapController, validateRequest } from "../../utils/express/wrappers";
@@ -38,3 +39,6 @@ clientsRouter.get(
   validateRequest(getByQueryClientsSchema),
   wrapController(ClientController.getByQuery)
 );
+=======
+// init
+>>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd
