@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // clients/validations.ts
 import { z } from "zod";
 import { zodMongoObjectId } from "../../utils/zod";
@@ -42,6 +41,4 @@ export const getByQueryClientsSchema = z.object({
     })
     .default({}),
 });
-=======
 // init
->>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

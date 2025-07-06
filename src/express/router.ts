@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Router } from "express";
 import { clientsRouter } from "./clients/router";
 import { casesRouter } from "./cases/router";
@@ -13,6 +12,4 @@ appRouter.use("/cases", casesRouter);
 appRouter.get(["/isAlive", "/isalive", "/health"], (req, res) => {
   res.status(200).json({ status: "ok" });
 });
-=======
 // init
->>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { ClientModel } from "./model";
 import { IClient } from "./interface";
 
@@ -27,6 +26,4 @@ export class ClientManager {
       .populate("userId advisorId");
   }
 }
-=======
 // init
->>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

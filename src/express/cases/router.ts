@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Router } from "express";
 import { CaseController } from "./controller";
 import { validateRequest, wrapController } from "../../utils/express/wrappers";
@@ -21,6 +20,4 @@ casesRouter.put(
   validateRequest(updateCaseSchema),
   wrapController(CaseController.update)
 );
-=======
 // init
->>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd

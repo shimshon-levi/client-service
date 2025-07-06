@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import mongoose from "mongoose";
 
 const clientSchema = new mongoose.Schema({
@@ -26,6 +25,4 @@ const clientSchema = new mongoose.Schema({
 });
 
 export const ClientModel = mongoose.model("Client", clientSchema);
-=======
 // init
->>>>>>> 83bd08017e0243b231e41ae12dc9dba2f577cbbd
