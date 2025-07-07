@@ -1,5 +1,6 @@
 import { ClientModel } from "./model";
 import { IClient } from "./interface";
+// import { UserModel } from "./model"; // אם יש צורך להשתמש במודל משתמש
 
 export class ClientManager {
   static async createClient(data: IClient) {

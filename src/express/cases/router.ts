@@ -1,23 +1,41 @@
+// cases/router.ts
 import { Router } from "express";
+import { authMiddleware } from "../../utils/authMiddleware";
+import { wrapController, validateRequest } from "../../utils/express/wrappers";
 import { CaseController } from "./controller";
-import { validateRequest, wrapController } from "../../utils/express/wrappers";
-import { createCaseSchema, updateCaseSchema } from "./validations";
+import {
+  createCaseSchema,
+  updateCaseSchema,
+  getCaseByIdSchema,
+  createCaseFromTemplateSchema,
+} from "./validations";
 
 export const casesRouter = Router();
+
+casesRouter.use(authMiddleware);
 
 casesRouter.post(
   "/",
   validateRequest(createCaseSchema),
   wrapController(CaseController.create)
 );
-casesRouter.get("/:id", wrapController(CaseController.getById));
-casesRouter.get(
-  "/client/:clientId",
-  wrapController(CaseController.getByClient)
-);
-casesRouter.put(
+
+casesRouter.patch(
   "/:id",
   validateRequest(updateCaseSchema),
   wrapController(CaseController.update)
 );
-// init
+
+casesRouter.get(
+  "/:id",
+  validateRequest(getCaseByIdSchema),
+  wrapController(CaseController.getById)
+);
+
+casesRouter.post(
+  "/from-template",
+  validateRequest(createCaseFromTemplateSchema),
+  wrapController(CaseController.createFromTemplate)
+);
+
+casesRouter.get("/my", wrapController(CaseController.getMyCases));

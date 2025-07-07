@@ -1,21 +1,47 @@
+// cases/manager.ts
 import { CaseModel } from "./model";
 import { ICase } from "./interface";
+import { TemplateModel } from "../templates/model";
 
-export const CaseManager = {
-  async createCase(data: ICase) {
+export class CaseManager {
+  static async createCase(data: ICase) {
     return await CaseModel.create(data);
-  },
+  }
 
-  async getCaseById(id: string) {
-    return await CaseModel.findById(id).populate("clientId");
-  },
+  static async updateCase(caseId: string, updates: Partial<ICase>) {
+    return await CaseModel.findByIdAndUpdate(caseId, updates, { new: true });
+  }
 
-  async getCasesByClient(clientId: string) {
-    return await CaseModel.find({ clientId }).populate("documents");
-  },
+  static async getCaseById(caseId: string) {
+    return await CaseModel.findById(caseId)
+      .populate("clientId")
+      .populate("advisorId")
+      .populate("requiredDocuments.uploadedDocumentId");
+  }
 
-  async updateCase(id: string, data: Partial<ICase>) {
-    return await CaseModel.findByIdAndUpdate(id, data, { new: true });
-  },
-};
-// init
+  static async getCasesByUser(userId: string, role: "admin" | "client") {
+    const filter =
+      role === "admin" ? { advisorId: userId } : { "clientId.userId": userId };
+    return await CaseModel.find(filter)
+      .populate("clientId")
+      .populate("advisorId");
+  }
+  static async createFromTemplate({
+    templateId,
+    clientId,
+  }: {
+    templateId: string;
+    clientId: string;
+  }) {
+    const template = await TemplateModel.findById(templateId);
+    if (!template) throw new Error("Template not found");
+
+    return await CaseModel.create({
+      clientId,
+      title: template.title,
+      description: template.description,
+      questions: template.questions,
+      requiredDocuments: template.requiredDocuments,
+    });
+  }
+}

@@ -8,32 +8,22 @@ const questionSchema = new mongoose.Schema({
     required: true,
   },
   required: { type: Boolean, default: true },
-  answer: { type: mongoose.Schema.Types.Mixed },
 });
 
 const requiredDocumentSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String },
   required: { type: Boolean, default: true },
-  uploadedDocumentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Document",
-  },
 });
 
-const caseSchema = new mongoose.Schema({
-  clientId: {
+const templateSchema = new mongoose.Schema({
+  advisorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Client",
+    ref: "User",
     required: true,
   },
   title: { type: String, required: true },
   description: { type: String },
-  status: {
-    type: String,
-    enum: ["open", "in_progress", "completed", "closed"],
-    default: "open",
-  },
   questions: [questionSchema],
   requiredDocuments: [requiredDocumentSchema],
   createdAt: {
@@ -42,4 +32,4 @@ const caseSchema = new mongoose.Schema({
   },
 });
 
-export const CaseModel = mongoose.model("Case", caseSchema);
+export const TemplateModel = mongoose.model("Template", templateSchema);

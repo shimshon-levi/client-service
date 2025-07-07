@@ -1,26 +1,50 @@
-import { Request, Response } from "express";
+// cases/controller.ts
+import { Response } from "express";
+import { TypedRequestWithUser } from "../../utils/zod";
 import { CaseManager } from "./manager";
+import {
+  createCaseSchema,
+  updateCaseSchema,
+  getCaseByIdSchema,
+  createCaseFromTemplateSchema,
+} from "./validations";
 
-export const CaseController = {
-  async create(req: Request, res: Response) {
-    const created = await CaseManager.createCase(req.body);
-    res.status(201).json(created);
-  },
+export class CaseController {
+  static async create(
+    req: TypedRequestWithUser<typeof createCaseSchema>,
+    res: Response
+  ) {
+    const newCase = await CaseManager.createCase(req.body);
+    res.status(201).json(newCase);
+  }
 
-  async getById(req: Request, res: Response) {
-    const caseDoc = await CaseManager.getCaseById(req.params.id);
-    res.json(caseDoc);
-  },
-
-  async getByClient(req: Request, res: Response) {
-    const clientId = req.params.clientId;
-    const cases = await CaseManager.getCasesByClient(clientId);
-    res.json(cases);
-  },
-
-  async update(req: Request, res: Response) {
+  static async update(
+    req: TypedRequestWithUser<typeof updateCaseSchema>,
+    res: Response
+  ) {
     const updated = await CaseManager.updateCase(req.params.id, req.body);
     res.json(updated);
-  },
-};
-// init
+  }
+
+  static async getById(
+    req: TypedRequestWithUser<typeof getCaseByIdSchema>,
+    res: Response
+  ) {
+    const found = await CaseManager.getCaseById(req.params.id);
+    res.json(found);
+  }
+
+  static async getMyCases(req: TypedRequestWithUser<any>, res: Response) {
+    const { id, role } = req.user;
+    const cases = await CaseManager.getCasesByUser(id, role);
+    res.json(cases);
+  }
+
+  static async createFromTemplate(
+    req: TypedRequestWithUser<typeof createCaseFromTemplateSchema>,
+    res: Response
+  ) {
+    const newCase = await CaseManager.createFromTemplate(req.body);
+    res.status(201).json(newCase);
+  }
+}

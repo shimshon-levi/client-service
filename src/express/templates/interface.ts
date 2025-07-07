@@ -1,24 +1,19 @@
-// cases/interface.ts
 export interface IQuestion {
   question: string;
   fieldType: "text" | "number" | "date" | "textarea" | "select";
   required?: boolean;
-  answer?: any;
 }
 
 export interface IRequiredDocument {
   name: string;
   description?: string;
   required?: boolean;
-  uploadedDocumentId?: string;
 }
 
-export interface ICase {
-  clientId: string;
-  // advisorId: string;
+export interface ITemplate {
+  advisorId: string;
   title: string;
   description?: string;
-  status?: "open" | "in_progress" | "completed" | "closed";
   questions?: IQuestion[];
   requiredDocuments?: IRequiredDocument[];
   createdAt?: Date;

@@ -25,4 +25,8 @@ const clientSchema = new mongoose.Schema({
 });
 
 export const ClientModel = mongoose.model("Client", clientSchema);
+
+const userSchema = new mongoose.Schema({}, { strict: false });
+
+export const UserModel = mongoose.model("User", userSchema);
 // init
