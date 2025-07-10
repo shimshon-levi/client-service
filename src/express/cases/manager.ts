@@ -2,10 +2,15 @@
 import { CaseModel } from "./model";
 import { ICase } from "./interface";
 import { TemplateModel } from "../templates/model";
+import { ClientModel } from "../clients/model";
+import { ClientManager } from "../clients/manager";
 
 export class CaseManager {
   static async createCase(data: ICase) {
-    return await CaseModel.create(data);
+    const newCase = await CaseModel.create(data);
+
+    await ClientManager.addCaseToClient(data.clientId, newCase._id.toString());
+    return newCase;
   }
 
   static async updateCase(caseId: string, updates: Partial<ICase>) {
@@ -26,6 +31,7 @@ export class CaseManager {
       .populate("clientId")
       .populate("advisorId");
   }
+
   static async createFromTemplate({
     templateId,
     clientId,
@@ -36,12 +42,15 @@ export class CaseManager {
     const template = await TemplateModel.findById(templateId);
     if (!template) throw new Error("Template not found");
 
-    return await CaseModel.create({
+    const newCase = await CaseModel.create({
       clientId,
       title: template.title,
       description: template.description,
       questions: template.questions,
       requiredDocuments: template.requiredDocuments,
     });
+
+    await ClientManager.addCaseToClient(clientId, newCase._id.toString());
+    return newCase;
   }
 }

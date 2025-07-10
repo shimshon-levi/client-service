@@ -26,5 +26,12 @@ export class ClientManager {
       .limit(limit)
       .populate("userId advisorId");
   }
+  static async addCaseToClient(clientId: string, caseId: string) {
+    return await ClientModel.findByIdAndUpdate(
+      clientId,
+      { $push: { caseIds: caseId } },
+      { new: true }
+    );
+  }
 }
 // init
