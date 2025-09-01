@@ -13,7 +13,7 @@ export const config = {
   mongo: {
     uri: env
       .get("MONGO_URI")
-      .default("mongodb://localhost/smart-docs")
+      .default("mongodb://localhost:27017/smart-docs")
       .asString(),
     usersCollectionName: env
       .get("USERS_COLLECTION_NAME")
