@@ -6,10 +6,15 @@ import { templatesRouter } from "./templates/router";
 export const appRouter = Router();
 
 // appRouter.get("/health", (_, res) => res.json({ status: "ok" }));
+appRouter.get("/hello", (_, res) => {
+  console.log("Health check endpoint hit");
 
-appRouter.use("/clients", clientsRouter);
-appRouter.use("/cases", casesRouter);
-appRouter.use("/templates", templatesRouter);
+  res.json({ status: "ok" });
+});
+
+appRouter.use("/api/clients", clientsRouter);
+appRouter.use("/api/cases", casesRouter);
+appRouter.use("/api/templates", templatesRouter);
 
 appRouter.get(["/isAlive", "/isalive", "/health"], (req, res) => {
   res.status(200).json({ status: "ok" });

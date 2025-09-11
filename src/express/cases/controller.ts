@@ -35,8 +35,11 @@ export class CaseController {
   }
 
   static async getMyCases(req: TypedRequestWithUser<any>, res: Response) {
+    console.log("req.user", req.user);
     const { id, role } = req.user;
     const cases = await CaseManager.getCasesByUser(id, role);
+    console.log("cases", cases);
+
     res.json(cases);
   }
 
