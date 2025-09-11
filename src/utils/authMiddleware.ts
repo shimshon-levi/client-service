@@ -1,34 +1,50 @@
+// middlewares/authMiddleware.ts
+import { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config";
-import { AuthenticatedUser } from "./types";
-import { Response, NextFunction, Request } from "express";
 
-export const authMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader?.startsWith("Bearer ")) {
-    res.status(401).json({ message: "Missing or invalid token" });
-    return;
-  }
+type Role = "admin" | "client";
+type JwtPayload = {
+  id: string;
+  email: string;
+  role: Role;
+  iat: number;
+  exp: number;
+};
 
-  const token = authHeader.split(" ")[1];
-
+// ודא שיש cookie-parser ב-Server: app.use(cookieParser());
+export const authMiddleware: RequestHandler = (req, res, next) => {
   try {
+    // 1) קודם מה-cookie
+    const cookieToken = (req as any).cookies?.[config.cookie.name];
+
+    // 2) נפילה ל-Bearer אם אין קוקי
+    const authHeader = req.headers.authorization;
+    const bearerToken =
+      authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.split(" ")[1]
+        : null;
+
+    const token = cookieToken || bearerToken;
+    if (!token) {
+      res.status(401).json({ message: "Missing or invalid token" });
+      return; // <- חשוב: להחזיר void, לא Response
+    }
+
     const payload = jwt.verify(
       token,
       config.authentication.secret
-    ) as AuthenticatedUser;
+    ) as JwtPayload;
 
-    console.log("✅ Token payload:", payload);
-
-    (req as any).user = payload;
+    (req as any).user = {
+      id: payload.id,
+      email: payload.email,
+      role: payload.role,
+    };
 
     next();
-  } catch (error) {
-    console.error("❌ JWT Error:", error);
+  } catch {
     res.status(401).json({ message: "Invalid or expired token" });
+    return; // <- גם כאן void
   }
 };
