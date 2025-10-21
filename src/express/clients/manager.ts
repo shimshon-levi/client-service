@@ -1,37 +1,42 @@
+// src/express/clients/manager.ts
 import { ClientModel } from "./model";
-import { IClient } from "./interface";
-// import { UserModel } from "./model"; // אם יש צורך להשתמש במודל משתמש
+import type { IClient } from "./interface";
 
 export class ClientManager {
-  static async createClient(data: IClient) {
-    return await ClientModel.create(data);
+  static async createClient({ userId, advisorId }: IClient) {
+    return ClientModel.findOneAndUpdate(
+      { userId, advisorId },
+      { $setOnInsert: { userId, advisorId, createdAt: new Date() } },
+      { upsert: true, new: true }
+    );
   }
 
   static async getClientsByAdvisor(advisorId: string) {
-    return await ClientModel.find({ advisorId }).populate("userId");
+    return ClientModel.find({ advisorId }).populate("userId");
   }
 
-  static async getClientByUserId(userId: string) {
-    return await ClientModel.findOne({ userId }).populate("advisorId");
+  // ⬅️ שינוי: להחזיר את כל הקשרים של הלקוח (מערך)
+  static async getClientsByUser(userId: string) {
+    return ClientModel.find({ userId }).populate("advisorId");
   }
 
   static async getByQuery(query: any, step = 0, limit = 10) {
-    const filter: any = {};
-
+    const filter: Record<string, any> = {};
     if (query.advisorId) filter.advisorId = query.advisorId;
-    if (query.role) filter["userId.role"] = query.role; // אם מוּבנה בתוך user
+    if (query.userId) filter.userId = query.userId;
 
-    return await ClientModel.find(filter)
+    // הערה: סינון לפי role של user לא יעבוד כאן בלי aggregate/דה-נורמליזציה
+    return ClientModel.find(filter)
       .skip(step * limit)
       .limit(limit)
       .populate("userId advisorId");
   }
+
   static async addCaseToClient(clientId: string, caseId: string) {
-    return await ClientModel.findByIdAndUpdate(
+    return ClientModel.findByIdAndUpdate(
       clientId,
-      { $push: { caseIds: caseId } },
+      { $addToSet: { caseIds: caseId } }, // ⬅️ עדיף מ-$push: לא מכפיל
       { new: true }
     );
   }
 }
-// init

@@ -1,19 +1,22 @@
 import { Response } from "express";
 import { ClientManager } from "./manager";
-import { TypedRequestWithUser } from "../../utils/zod";
+import { TypedRequest, TypedRequestWithUser } from "../../utils/zod";
 import {
   createClientSchema,
   getByQueryClientsSchema,
   getMyClientsSchema,
 } from "./validations";
+import { IClient } from "./interface";
 
 export class ClientController {
   static async create(
     req: TypedRequestWithUser<typeof createClientSchema>,
     res: Response
   ) {
-    const client = await ClientManager.createClient(req.body);
-    res.status(201).json(client);
+    const { userId } = req.body;
+    const advisorId = req.user.id;
+    const client: IClient = { userId, advisorId };
+    res.json(await ClientManager.createClient(client));
   }
 
   static async getMyClients(
@@ -25,14 +28,14 @@ export class ClientController {
     res.json(clients);
   }
 
+  // ⬅️ שינוי: להחזיר את כל הקשרים של המשתמש שמחובר כלקוח (מערך)
   static async getMe(
     req: TypedRequestWithUser<typeof getMyClientsSchema>,
     res: Response
   ) {
-    console.log("🔐 User from token:", req.user);
     const userId = req.user.id;
-    const client = await ClientManager.getClientByUserId(userId);
-    res.json(client);
+    const engagements = await ClientManager.getClientsByUser(userId);
+    res.json(engagements); // מערך
   }
 
   static async getByQuery(
@@ -44,4 +47,3 @@ export class ClientController {
     res.json(clients);
   }
 }
-// init

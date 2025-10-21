@@ -5,7 +5,7 @@ const clientSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-    unique: true, // כל משתמש יכול להיות רק פעם אחת כלקוח
+    // unique: true, // כל משתמש יכול להיות רק פעם אחת כלקוח
   },
   advisorId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +23,14 @@ const clientSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// אינדקסים
+clientSchema.index(
+  { userId: 1, advisorId: 1 },
+  { unique: true, name: "user_advisor_unique" }
+);
+clientSchema.index({ advisorId: 1 }, { name: "advisor_lookup" });
+clientSchema.index({ userId: 1 }, { name: "user_lookup" });
 
 export const ClientModel = mongoose.model("Client", clientSchema);
 

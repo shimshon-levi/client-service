@@ -1,18 +1,26 @@
-// clients/validations.ts
+// src/express/clients/validations.ts
 import { z } from "zod";
 import { zodMongoObjectId } from "../../utils/zod";
 
-// יצירת לקוח
+// יצירת לקוח/קשר: מקבלים רק מזהה הלקוח מה-body
 export const createClientSchema = z.object({
-  body: z.object({
-    userId: zodMongoObjectId,
-    advisorId: zodMongoObjectId,
-  }),
+  body: z
+    .object({
+      userId: zodMongoObjectId.optional(),
+      clientUserId: zodMongoObjectId.optional(),
+      advisorId: zodMongoObjectId.optional(), // ייתכן שישלח מהעבר — נתעלם
+    })
+    .refine((v) => !!(v.userId || v.clientUserId), {
+      message: "userId או clientUserId נדרש",
+      path: ["userId"],
+    })
+    // נרמול: תמיד נחזיר body עם { userId }
+    .transform((v) => ({ userId: v.userId ?? v.clientUserId! })),
   query: z.object({}).default({}),
   params: z.object({}).default({}),
 });
 
-// עדכון לקוח
+// השאר ללא שינוי...
 export const updateClientSchema = z.object({
   body: z.object({
     caseIds: z.array(zodMongoObjectId).optional(),
@@ -21,14 +29,12 @@ export const updateClientSchema = z.object({
   params: z.object({}).default({}),
 });
 
-// לקוחות שלי
 export const getMyClientsSchema = z.object({
   body: z.object({}).default({}),
   query: z.object({}).default({}),
   params: z.object({}).default({}),
 });
 
-// לפי פילטר
 export const getByQueryClientsSchema = z.object({
   body: z.object({}).default({}),
   params: z.object({}).default({}),
@@ -41,4 +47,3 @@ export const getByQueryClientsSchema = z.object({
     })
     .default({}),
 });
-// init
